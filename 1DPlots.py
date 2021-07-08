@@ -49,12 +49,12 @@ from pathlib import Path
 from Logger import Logger
 
 # Choose which plots to produce.
-BranchingEstimate = False
-BranchingRate = False
-MemoryCosts = False
-LogMemoryCosts = False
+BranchingEstimate = True
+BranchingRate = True
+MemoryCosts = True
+LogMemoryCosts = True
 NBPvsNRW1D = True
-hTransf = False
+hTransf = True
 
 # Log the output.
 useLogger = True

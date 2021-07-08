@@ -55,14 +55,26 @@ from pathlib import Path
 from Logger import Logger
 
 # Choose which plots to produce.
-AnalysehTransfPF = False
-PlotAnim = False
+AnalysehTransfPF = True
+PlotAnim = True
 CompareEigenEstimates = True
-PlotEigenfnEstimates = False
+PlotEigenfnEstimates = True
 
 # Log the output.
 useLogger = True
 useGitDiff = True
+
+# Scaling parameter to control runtime size. Set to 10 for plots in the paper.
+# Note that run times for n ~ 10 will be large.
+test_scale = 2
+if test_scale != 10:
+    print("Warning: samples sizes are not the same as in the paper. " +
+          "Set test_scale to 10 for equivalent plots.")
+    
+    
+print("Expected runtime on a good desktop computer: ", int(test_scale*2500/60), 
+      " mins (approx)")
+
 
 if useLogger:
     id_str = time.strftime("%Y%m%d%H%M%S")
@@ -123,7 +135,7 @@ if AnalysehTransfPF:
             return PathCircles(0.0, timeStep, pos, theta, Srate_dom,
                                Srate_circ, Brate_dom, Brate_circ, v_start)
 
-    NoPart = 250
+    NoPart = int(25*test_scale)
 
     pf = PF(initPos, motion, nPart=NoPart)
     # print(pf.weights())
@@ -215,16 +227,21 @@ if AnalysehTransfPF:
 
     if PlotAnim:
         print("\n~~~~ Producing Animation ~~~~\n")
-
-        if useLogger:
-            ani = pf.heatMap2(useWeights='Normalised', resampleEvery=5,
-                              tStep=0.25, nStepsToGo=20,
-                              filename=output_dir+"/PFHeatmap.gif")
-        else:
-            ani = pf.heatMap2(useWeights='Normalised', resampleEvery=5,
-                              tStep=0.25, nStepsToGo=20)
-
-        plt.show(ani)
+        
+        try:    
+            if useLogger:
+                ani = pf.heatMap2(useWeights='Normalised', resampleEvery=5,
+                                  tStep=0.25, nStepsToGo=20,
+                                  filename=output_dir+"/PFHeatmap.gif")
+            else:
+                ani = pf.heatMap2(useWeights='Normalised', resampleEvery=5,
+                                  tStep=0.25, nStepsToGo=20)
+    
+            plt.show(ani)
+        except Exception as err:
+            print("Error in Producing Animation. May need to install ffmpeg.")
+            print(err)
+            
 
 if CompareEigenEstimates:
     T_0 = 0             # Starting time
@@ -239,9 +256,9 @@ if CompareEigenEstimates:
     t_start = 0
     v_start = 1
     sample_times = np.linspace(0.05*T, 0.99*T, 20)
-    n_sim_br = 400
-    n_sim_nrw = 50000
-    n_sim_h = 200
+    n_sim_br = int(40*test_scale)
+    n_sim_nrw = int(5000*test_scale)
+    n_sim_h = int(20*test_scale)
     n_rep = 5
 
     mot2_vals = [0.001, 0.5, 0.5]
@@ -364,7 +381,7 @@ if PlotEigenfnEstimates:
 
     sample_times = np.linspace(0.2*T, 0.99*T, 10)
 
-    nreps = 500
+    nreps = int(50*test_scale)
 
     print("~~~~ Produce a plot of the Eigenfunction (Experimental) ~~~~\n")
 
@@ -403,7 +420,7 @@ if PlotEigenfnEstimates:
     print("~~~~ Estimating Eigenfunction ~~~~\n")
 
     step = 22
-    n_sim = 200
+    n_sim = int(20*test_scale)
 
     print("*****************")
     print("Number of Sims per site = ", n_sim)
