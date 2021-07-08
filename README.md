@@ -12,7 +12,7 @@ main files here:
 
 ## One-dimensional Slab Reactor
 
-The 1D case considers the example described in Section 9.2. The files
+The 1D case considers the example described in Section 9.2-3. The files
 associated with this are:
 
 - *FixedPt.py*:
@@ -27,6 +27,11 @@ and h-Transformed.
 Script to produce the output for the paper.
 
 ## Two-dimensional Reactor
+
+The 2D case looks at a simple 2D model of a reactor. The numerical results
+are discussed in Section 9.4 of the paper. Note that the code will not
+currently replicate the output from the paper. To do this correctly, the
+parameter `test_scale` in *NTE2D.py* should be changed to 10.
 
 - *hTransf.py*:
 Implements the h-Transfrom for the 2DNTE case.
